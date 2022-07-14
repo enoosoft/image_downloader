@@ -15,7 +15,7 @@ Future<void> main(List<String> arguments) async {
     final line = fields[i];
     if (i == 0) {
       continue;
-    }  
+    }
     String uri = line[Cols.imageUrl.index].toString().trim();
     if (uri.isEmpty || !uri.startsWith('http')) {
       log('$i   ${line[Cols.prdcd.index]}  ${line[Cols.category1.index]}  ${line[Cols.category2.index]}  ${line[Cols.imageUrl.index]} INVALID IMAGE ADDRESS...');
@@ -26,11 +26,10 @@ Future<void> main(List<String> arguments) async {
       continue;
     }
 
-    String extension = line[Cols.imageUrl.index]
-        .toString()
-        .substring(line[Cols.imageUrl.index].toString().lastIndexOf('.') + 1);
-    String targetFileName = imageFullFileName(
-        line[Cols.category1.index], line[Cols.category2.index], line[0].toString(), extension);
+    String extension =
+        line[Cols.imageUrl.index].toString().substring(line[Cols.imageUrl.index].toString().lastIndexOf('.') + 1);
+    String targetFileName =
+        imageFullFileName(line[Cols.category1.index], line[Cols.category2.index], line[0].toString(), extension);
 
     var newDirectory = Directory(imagePath(line[Cols.category1.index], line[Cols.category2.index]));
     newDirectory.createSync(recursive: true);
@@ -53,10 +52,10 @@ Future<void> main(List<String> arguments) async {
     });
   }
 
-  log('SUCCESS = $count/${fields.length}');
-  log('FAIL = $failCount/${fields.length}');
-  logger.writeAsString('SUCCESS = $count/${fields.length}\n', mode: FileMode.append);
-  logger.writeAsString('FAIL = $failCount/${fields.length}\n', mode: FileMode.append);
+  log('SUCCESS = $count/${fields.length - 1}'); //minus header row count
+  log('FAIL = $failCount/${fields.length - 1}');
+  logger.writeAsString('SUCCESS = $count/${fields.length - 1}\n', mode: FileMode.append);
+  logger.writeAsString('FAIL = $failCount/${fields.length - 1}\n', mode: FileMode.append);
 }
 
 String imagePath(String category1, String category2) {
