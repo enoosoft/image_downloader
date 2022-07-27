@@ -5,7 +5,6 @@
 
 # Conventional directory for build output.
 build/
-
 target/
 *.log
 image_source3.csv
