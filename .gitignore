@@ -7,5 +7,5 @@
 build/
 
 target/
-*.csv
 *.log
+image_source3.csv
