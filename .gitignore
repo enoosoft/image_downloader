@@ -7,5 +7,5 @@
 build/
 
 target/
-assets/image_source.csv
+*.csv
 *.log
