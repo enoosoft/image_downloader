@@ -10,7 +10,7 @@ import 'models/columns.dart';
 
 final usage = '''
 # 사용법
-image_downloader.exe  --csv image_source3.csv --fileName A  --category1 B --category2 C --url D
+image_down.exe  --csv image_source3.csv --fileName A  --category1 B --category2 C --url D
 
 # 매개변수
 --csv       : 입력정보 엑셀 csv 파일
@@ -52,7 +52,10 @@ Future<void> main(List<String> arguments) async {
 
   final input = File(cols.csv).openRead();
 
-  final fields = await input.transform(utf8.decoder).transform(CsvToListConverter()).toList();
+  final fields = await input
+      .transform(utf8.decoder)
+      .transform(CsvToListConverter())
+      .toList();
 
   File logger = File("image_downloader.log");
   int count = 0, failCount = 0;
@@ -63,7 +66,8 @@ Future<void> main(List<String> arguments) async {
     }
     String uri = line[cols.url.index].toString().trim();
     if (uri.isEmpty || !uri.startsWith('http')) {
-      log('$i   ${line[cols.fileName.index]}  ${line[cols.category1.index]}  ${line[cols.category2.index]}  ${line[cols.url.index]} INVALID IMAGE ADDRESS...');
+      print(
+          '$i   ${line[cols.fileName.index]}  ${line[cols.category1.index]}  ${line[cols.category2.index]}  ${line[cols.url.index]} INVALID IMAGE ADDRESS...');
       logger.writeAsString(
           '$i   ${line[0]}  ${line[cols.category1.index]}  ${line[cols.category2.index]}  ${line[cols.url.index]} INVALID IMAGE ADDRESS...\n',
           mode: FileMode.append);
@@ -71,39 +75,46 @@ Future<void> main(List<String> arguments) async {
       continue;
     }
 
-    String extension = line[cols.url.index].toString().substring(line[cols.url.index].toString().lastIndexOf('.') + 1);
-    String targetFileName =
-        imageFullFileName(line[cols.category1.index], line[cols.category2.index], line[0].toString(), extension);
+    String extension = line[cols.url.index]
+        .toString()
+        .substring(line[cols.url.index].toString().lastIndexOf('.') + 1);
+    String targetFileName = imageFullFileName(line[cols.category1.index],
+        line[cols.category2.index], line[0].toString(), extension);
 
-    var newDirectory = Directory(imagePath(line[cols.category1.index], line[cols.category2.index]));
+    var newDirectory = Directory(
+        imagePath(line[cols.category1.index], line[cols.category2.index]));
     newDirectory.createSync(recursive: true);
     String logString =
         '$i   ${line[0]}  ${line[cols.category1.index]}  ${line[cols.category2.index]} ${line[cols.url.index].toString().trim()} $targetFileName ';
-    await download(line[cols.url.index].toString().trim(), targetFileName).then((success) {
+    await download(line[cols.url.index].toString().trim(), targetFileName)
+        .then((success) {
       if (success) {
-        log('SUCCESS $logString');
+        print('SUCCESS $logString');
         logger.writeAsString('SUCCESS $logString\n', mode: FileMode.append);
 
         count++;
       } else {
-        log('FAIL... $logString');
+        print('FAIL... $logString');
         logger.writeAsString('FAIL... $logString\n', mode: FileMode.append);
         failCount++;
       }
     });
   }
 
-  log('SUCCESS = $count/${fields.length - 1}'); //minus header row count
-  log('FAIL = $failCount/${fields.length - 1}');
-  logger.writeAsString('SUCCESS = $count/${fields.length - 1}\n', mode: FileMode.append);
-  logger.writeAsString('FAIL = $failCount/${fields.length - 1}\n', mode: FileMode.append);
+  print('SUCCESS = $count/${fields.length - 1}'); //minus header row count
+  print('FAIL = $failCount/${fields.length - 1}');
+  logger.writeAsString('SUCCESS = $count/${fields.length - 1}\n',
+      mode: FileMode.append);
+  logger.writeAsString('FAIL = $failCount/${fields.length - 1}\n',
+      mode: FileMode.append);
 }
 
 String imagePath(String category1, String category2) {
   return 'target/${category1.replaceAll(RegExp(r'[/\s]'), '')}_${category2.replaceAll(RegExp(r'[/\s]'), '')}';
 }
 
-String imageFullFileName(String category1, String category2, String prdcd, String extension) {
+String imageFullFileName(
+    String category1, String category2, String prdcd, String extension) {
   return '${imagePath(category1, category2)}/of_$prdcd.$extension';
 }
 
