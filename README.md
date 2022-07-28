@@ -1,6 +1,19 @@
 # Image (in CSV) downloader
 
-엑셀(csv) 파일의 network image url 을 일괄 다운로드하여 엑셀에 있는 카테고리별 폴더에 저장하는 프로그램 입니다.
+It is a program that downloads the network image url of the Excel (csv) file in bulk and stores it in a folder by category in Excel.
 
-- 개요
-![desc](assets/이미지%20폴더%20저장.jpg)
+## How to run
+
+```shell
+image_down.exe  --csv image_source3.csv --fileName A  --category1 B --category2 C --url D
+```
+
+## Arguments
+
+```shell
+--csv : Input Excel csv file
+--fileName : Column ID containing image file name. ex) A
+--category1: Category 1 column ID. ex) B
+--category2 : Category 2 column ID. ex) C
+--url : Column ID containing the network image URL. ex) D
+```
